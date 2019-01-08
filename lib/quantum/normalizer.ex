@@ -83,6 +83,10 @@ defmodule Quantum.Normalizer do
     Job.set_timezone(job, normalize_timezone(timezone))
   end
 
+  defp normalize_job_option({:state, state}, job) do
+    Job.set_state(job, normalize_state(state))
+  end
+
   defp normalize_job_option(_, job), do: job
 
   @spec normalize_task(config_task) :: Job.task() | no_return
@@ -123,4 +127,7 @@ defmodule Quantum.Normalizer do
   defp normalize_timezone(timezone) when is_binary(timezone), do: timezone
   defp normalize_timezone(:utc), do: :utc
   defp normalize_timezone(timezone), do: raise("Invalid timezone: #{inspect(timezone)}")
+
+  defp normalize_state(state) when state in [:active, :inactive], do: state
+  defp normalize_state(state), do: raise("Invalid state: #{inspect(state)}")
 end
